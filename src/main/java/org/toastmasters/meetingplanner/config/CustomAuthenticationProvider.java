@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import org.toastmasters.meetingplanner.dto.User;
+import org.toastmasters.meetingplanner.dto.user.User;
 import org.toastmasters.meetingplanner.service.UserService;
 
 @Component
@@ -28,7 +28,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String rawPassword = authentication.getCredentials().toString();
 
-        User user = userService.getUserByUsername(username)
+        User user = userService.getUserByUserName(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         if (userService.validatePassword(rawPassword, user)) {
@@ -41,7 +41,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private UserDetailsService userDetailsService() {
         return username -> {
-            User user = userService.getUserByUsername(username)
+            User user = userService.getUserByUserName(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             return org.springframework.security.core.userdetails.User
                     .withUsername(user.getUsername())

@@ -1,10 +1,8 @@
 package org.toastmasters.meetingplanner.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.toastmasters.meetingplanner.dto.agenda.Agenda;
 import org.toastmasters.meetingplanner.service.MeetingService;
 
 @RestController
@@ -18,7 +16,18 @@ public class MeetingController {
     }
 
     @PatchMapping("reserveRole/{id}")
-    public  void reserveRole(@PathVariable Long id){
+    public Agenda reserveRole(@PathVariable Long id){
         meetingService.reserveRole(id);
+        return meetingService.getAgenda();
+    }
+
+    @PostMapping("reserveSpeech")
+    public Agenda reserveSpeech(@RequestBody Object speech){
+        return meetingService.getAgenda();
+    }
+
+    @GetMapping("agenda")
+    public Agenda getAgenda(){
+        return meetingService.getAgenda();
     }
 }

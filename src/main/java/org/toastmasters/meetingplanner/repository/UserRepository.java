@@ -1,7 +1,7 @@
 package org.toastmasters.meetingplanner.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.toastmasters.meetingplanner.dto.User;
+import org.toastmasters.meetingplanner.dto.user.User;
 
 import java.util.Optional;
 

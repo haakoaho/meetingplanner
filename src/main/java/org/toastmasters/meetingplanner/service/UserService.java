@@ -1,10 +1,12 @@
 package org.toastmasters.meetingplanner.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.toastmasters.meetingplanner.dto.RegisterUser;
-import org.toastmasters.meetingplanner.dto.User;
+import org.toastmasters.meetingplanner.dto.user.RegisterUser;
+import org.toastmasters.meetingplanner.dto.user.User;
 import org.toastmasters.meetingplanner.repository.UserRepository;
 
 import java.security.SecureRandom;
@@ -35,7 +37,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<User> getUserByUsername(String username) {
+    public Optional<User> getUserBySecurityConfig() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        return getUserByUserName(principal.getUsername());
+    }
+
+    public Optional<User> getUserByUserName(String username) {
         return userRepository.findByUsername(username);
     }
 

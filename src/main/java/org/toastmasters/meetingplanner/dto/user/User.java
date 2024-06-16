@@ -1,4 +1,4 @@
-package org.toastmasters.meetingplanner.dto;
+package org.toastmasters.meetingplanner.dto.user;
 
 import jakarta.persistence.*;
 
