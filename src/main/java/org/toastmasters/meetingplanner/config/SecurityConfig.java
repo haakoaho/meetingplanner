@@ -11,21 +11,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.toastmasters.meetingplanner.service.GitHubService;
 
 import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig  {
+public class SecurityConfig {
 
     private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final GitHubService gitHubService;
 
 
     @Autowired
-    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider) {
+    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, GitHubService gitHubService) {
         this.customAuthenticationProvider = customAuthenticationProvider;
+        this.gitHubService = gitHubService;
     }
 
     @Bean
@@ -41,7 +43,7 @@ public class SecurityConfig  {
                 .cors(cors -> cors
                         .configurationSource(request -> {
                             CorsConfiguration config = new CorsConfiguration();
-                            config.setAllowedOrigins(List.of("http://localhost:3000"));
+                            config.setAllowedOrigins(List.of("http://localhost:3000", gitHubService.getDeployments().frontendUrl()));
                             config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
                             config.setAllowedHeaders(List.of("*"));
                             config.setAllowCredentials(true);
@@ -52,7 +54,7 @@ public class SecurityConfig  {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 ) // Create session only when needed
                 .httpBasic(Customizer.withDefaults())
-                //.addFilterAfter(customHeaderFilter, SecurityContextPersistenceFilter.class)
+        //.addFilterAfter(customHeaderFilter, SecurityContextPersistenceFilter.class)
         ;
 
         return http.build();
