@@ -52,10 +52,9 @@ public class SecurityConfig {
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                ) // Create session only when needed
-                .httpBasic(Customizer.withDefaults())
-        //.addFilterAfter(customHeaderFilter, SecurityContextPersistenceFilter.class)
-        ;
+                )
+                .anonymous(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }

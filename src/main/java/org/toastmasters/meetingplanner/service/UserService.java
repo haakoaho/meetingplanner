@@ -25,13 +25,13 @@ public class UserService {
     }
 
     public void registerUser(RegisterUser registerUser) {
-        if (userRepository.findByUsername(registerUser.username()).isPresent()) {
+        if (userRepository.findByEmail(registerUser.email()).isPresent()) {
             throw new RuntimeException("user already exist");
         }
         String salt = generateSalt();
         String hashedPassword = hashPassword(registerUser.password(), salt);
 
-        User user = new User(registerUser.username(), registerUser.name(),
+        User user = new User(registerUser.name(),
                 registerUser.email(), hashedPassword, salt, registerUser.phoneNumber());
 
         userRepository.save(user);
@@ -40,11 +40,11 @@ public class UserService {
     public Optional<User> getUserBySecurityConfig() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         var principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
-        return getUserByUserName(principal.getUsername());
+        return getUserByEmail(principal.getUsername());
     }
 
-    public Optional<User> getUserByUserName(String username) {
-        return userRepository.findByUsername(username);
+    public Optional<User> getUserByEmail(String username) {
+        return userRepository.findByEmail(username);
     }
 
     public String hashPassword(String password, String salt) {

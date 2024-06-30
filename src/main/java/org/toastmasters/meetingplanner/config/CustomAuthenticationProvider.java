@@ -1,17 +1,21 @@
 package org.toastmasters.meetingplanner.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.toastmasters.meetingplanner.dto.user.User;
 import org.toastmasters.meetingplanner.service.UserService;
+
+import java.util.Optional;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
@@ -28,10 +32,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String username = authentication.getName();
         String rawPassword = authentication.getCredentials().toString();
 
-        User user = userService.getUserByUserName(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        Optional<User> user = userService.getUserByEmail(username);
+        if(user.isEmpty()) return new AnonymousAuthenticationToken("anonymous", "anonymousUser", AuthorityUtils.createAuthorityList("ROLE_ANONYMOUS"));
 
-        if (userService.validatePassword(rawPassword, user)) {
+        if (userService.validatePassword(rawPassword, user.get())) {
             UserDetails userDetails = userDetailsService().loadUserByUsername(username);
             return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         } else {
@@ -41,10 +45,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     private UserDetailsService userDetailsService() {
         return username -> {
-            User user = userService.getUserByUserName(username)
+            User user = userService.getUserByEmail(username)
                     .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             return org.springframework.security.core.userdetails.User
-                    .withUsername(user.getUsername())
+                    .withUsername(user.getEmail())
                     .password(user.getHashedPassword())
                     .roles("USER")
                     .build();
