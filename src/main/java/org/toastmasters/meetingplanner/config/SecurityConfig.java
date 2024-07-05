@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .cors(cors -> cors
                         .configurationSource(request -> {
                             CorsConfiguration config = new CorsConfiguration();
-                            config.setAllowedOrigins(List.of("http://localhost:3000", gitHubService.getDeployments().frontendUrl()));
+                            config.setAllowedOrigins(List.of("http://localhost:3000", gitHubService.getFrontendDeployment().url()));
                             config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
                             config.setAllowedHeaders(List.of("*"));
                             config.setAllowCredentials(true);

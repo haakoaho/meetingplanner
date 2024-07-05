@@ -4,22 +4,22 @@ package org.toastmasters.meetingplanner.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.toastmasters.meetingplanner.dto.Deployments;
+import org.toastmasters.meetingplanner.dto.Deployment;
 
 @Service
 public class GitHubService {
 
-    private static final String GITHUB_URL = "https://haakoaho.github.io/speak-fun/deployments.json";
+    private static final String MOBILE_SPEAK_DEPLOYMENT = "https://haakoaho.github.io/speak-fun/deployments/mobile-speak.json";
 
-    public Deployments getDeployments() {
+    public Deployment getFrontendDeployment() {
         RestTemplate restTemplate = new RestTemplate();
-        String jsonResponse = restTemplate.getForObject(GITHUB_URL, String.class);
+        String jsonResponse = restTemplate.getForObject(MOBILE_SPEAK_DEPLOYMENT, String.class);
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(jsonResponse, Deployments.class);
+            return objectMapper.readValue(jsonResponse, Deployment.class);
         } catch (Exception e) {
             e.printStackTrace();
-            return new Deployments("http://localhost:3000", "http://localhost:8081");
+            return new Deployment("localhost:3000");
         }
     }
 }

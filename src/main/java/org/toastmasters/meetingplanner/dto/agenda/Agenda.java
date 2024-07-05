@@ -1,6 +1,5 @@
 package org.toastmasters.meetingplanner.dto.agenda;
 
-import org.toastmasters.meetingplanner.dto.Role;
 import org.toastmasters.meetingplanner.dto.Speech;
 
 import java.time.LocalDateTime;
