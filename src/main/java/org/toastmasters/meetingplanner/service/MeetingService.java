@@ -57,4 +57,11 @@ public class MeetingService {
         speech.setMeetingId(meeting.getId());
         speechRepository.save(speech);
     }
+
+    public void evaluateSpeech(Long speechId) {
+        User user = userService.getUserBySecurityConfig().orElseThrow();
+        Speech speech = speechRepository.findById(speechId).orElseThrow();
+        speech.setEvaluatorId(user.getId());
+        speechRepository.save(speech);
+    }
 }

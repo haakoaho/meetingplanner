@@ -28,6 +28,12 @@ public class MeetingController {
         return meetingService.getAgenda(request.meetingOrder());
     }
 
+    @PatchMapping("evaluateSpeech/{id}")
+    public Agenda evaluateSpeech(@PathVariable Long id){
+        meetingService.evaluateSpeech(id);
+        return meetingService.getAgenda(0);
+    }
+
     @GetMapping("agenda/{meetingOrder}")
     public Agenda getAgenda(@PathVariable int meetingOrder){
         return meetingService.getAgenda(meetingOrder);
