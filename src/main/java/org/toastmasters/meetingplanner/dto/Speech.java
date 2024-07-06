@@ -1,19 +1,28 @@
 package org.toastmasters.meetingplanner.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "speech")
 public class Speech {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private String pathway;
-    private Integer speakerId;
+    private Long speakerId;
 
-    private Integer evaluatorId;
+    private Long evaluatorId;
+
+    private Long meetingId;
+
+    public Long getMeetingId() {
+        return meetingId;
+    }
+
+    public void setMeetingId(Long meetingId) {
+        this.meetingId = meetingId;
+    }
 
     public Long getId() {
         return id;
@@ -39,19 +48,19 @@ public class Speech {
         this.pathway = pathway;
     }
 
-    public Integer getSpeakerId() {
+    public Long getSpeakerId() {
         return speakerId;
     }
 
-    public void setSpeakerId(Integer speakerId) {
+    public void setSpeakerId(Long speakerId) {
         this.speakerId = speakerId;
     }
 
-    public Integer getEvaluatorId() {
+    public Long getEvaluatorId() {
         return evaluatorId;
     }
 
-    public void setEvaluatorId(Integer evaluatorId) {
+    public void setEvaluatorId(Long evaluatorId) {
         this.evaluatorId = evaluatorId;
     }
 }

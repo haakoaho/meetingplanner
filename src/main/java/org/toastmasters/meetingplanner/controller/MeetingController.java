@@ -2,6 +2,7 @@ package org.toastmasters.meetingplanner.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.toastmasters.meetingplanner.dto.SpeechRequest;
 import org.toastmasters.meetingplanner.dto.agenda.Agenda;
 import org.toastmasters.meetingplanner.service.MeetingService;
 
@@ -15,19 +16,20 @@ public class MeetingController {
         this.meetingService = meetingService;
     }
 
-    @PatchMapping("reserveRole/{id}")
-    public Agenda reserveRole(@PathVariable Long id){
-        meetingService.reserveRole(id);
-        return meetingService.getAgenda();
+    @PatchMapping("reserveRole/{meetingOrder}/{id}")
+    public Agenda reserveRole(@PathVariable Long id, @PathVariable int meetingOrder){
+        meetingService.reserveRole(id, meetingOrder);
+        return meetingService.getAgenda(meetingOrder);
     }
 
     @PostMapping("reserveSpeech")
-    public Agenda reserveSpeech(@RequestBody Object speech){
-        return meetingService.getAgenda();
+    public Agenda reserveSpeech(@RequestBody SpeechRequest request){
+        meetingService.reserveSpeech(request);
+        return meetingService.getAgenda(request.meetingOrder());
     }
 
-    @GetMapping("agenda")
-    public Agenda getAgenda(){
-        return meetingService.getAgenda();
+    @GetMapping("agenda/{meetingOrder}")
+    public Agenda getAgenda(@PathVariable int meetingOrder){
+        return meetingService.getAgenda(meetingOrder);
     }
 }

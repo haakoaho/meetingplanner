@@ -11,10 +11,28 @@ import java.time.LocalDateTime;
 public class Meeting {
 
     @Id
+    private Long Id;
     private LocalDateTime startDateTime;
     private String wordOfTheDay;
     private String theme;
+
     private Integer speakers;
+
+    public Integer getSpeakers() {
+        return speakers;
+    }
+
+    public void setSpeakers(Integer speakers) {
+        this.speakers = speakers;
+    }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
+    }
 
     public LocalDateTime getStartDateTime() {
         return startDateTime;
@@ -40,11 +58,4 @@ public class Meeting {
         this.theme = theme;
     }
 
-    public Integer getSpeakers() {
-        return speakers;
-    }
-
-    public void setSpeakers(Integer speakers) {
-        this.speakers = speakers;
-    }
 }
