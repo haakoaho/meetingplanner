@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.toastmasters.meetingplanner.dto.Speech;
 import org.toastmasters.meetingplanner.dto.SpeechRequest;
-import org.toastmasters.meetingplanner.dto.agenda.Agenda;
-import org.toastmasters.meetingplanner.dto.agenda.AgendaRole;
-import org.toastmasters.meetingplanner.dto.agenda.Meeting;
-import org.toastmasters.meetingplanner.dto.agenda.MeetingRole;
+import org.toastmasters.meetingplanner.dto.agenda.*;
 import org.toastmasters.meetingplanner.dto.user.User;
 import org.toastmasters.meetingplanner.dto.user.UserResponse;
 import org.toastmasters.meetingplanner.repository.*;
@@ -46,7 +43,7 @@ public class MeetingService {
     public Agenda getAgenda(int meetingOrder) {
         Meeting meeting = meetingRepository.findNthRecentMeeting(meetingOrder);
         List<AgendaRole> roles = meetingRepository.findAgendaRolesByMeetingId(meeting.getId()).stream().map(AgendaRole::new).toList();
-        List<Speech> speeches = speechRepository.findByMeetingId(meeting.getId());
+        List<AgendaSpeech> speeches = speechRepository.findSpeechInAgendaByMeetingId(meeting.getId()).stream().map(AgendaSpeech::new).toList();
         return new Agenda(roles, speeches, meeting.getStartDateTime(), meeting.getWordOfTheDay(), meeting.getTheme(), meeting.getSpeakers());
     }
 
