@@ -3,14 +3,13 @@ package org.toastmasters.meetingplanner.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.toastmasters.meetingplanner.dto.agenda.AgendaRole;
 import org.toastmasters.meetingplanner.dto.agenda.Meeting;
 
 import java.util.List;
 import java.util.Map;
 
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
-    @Query(value = "SELECT * FROM Meeting ORDER BY start_date_time DESC LIMIT 1 OFFSET :offset", nativeQuery = true)
+    @Query(value = "SELECT * FROM Meeting ORDER BY start_date_time LIMIT 1 OFFSET :offset", nativeQuery = true)
     Meeting findNthRecentMeeting(@Param("offset") int offset);
 
     @Query(value = " SELECT u.id AS user_id," +
