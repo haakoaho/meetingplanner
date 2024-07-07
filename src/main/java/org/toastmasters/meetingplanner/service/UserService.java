@@ -1,22 +1,29 @@
 package org.toastmasters.meetingplanner.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.toastmasters.meetingplanner.dto.RecordSpeech;
+import org.toastmasters.meetingplanner.dto.agenda.AgendaRole;
+import org.toastmasters.meetingplanner.dto.agenda.AgendaSpeech;
 import org.toastmasters.meetingplanner.dto.user.RegisterUser;
 import org.toastmasters.meetingplanner.dto.user.User;
 import org.toastmasters.meetingplanner.repository.UserRepository;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
+import java.util.Map;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
     public UserService(UserRepository userRepository) {
@@ -61,6 +68,29 @@ public class UserService {
     public boolean validatePassword(String rawPassword, User user) {
         String saltedPassword = rawPassword + user.getSalt();
         return passwordEncoder.matches(saltedPassword, user.getHashedPassword());
+    }
+
+    public void recordSpeech(AgendaSpeech speech) {
+        User speaker = userRepository.findById(speech.getSpeakerId()).orElseThrow();
+        var speeches = (List<RecordSpeech>) speaker.getMeetingHistory().get("speeches");
+        speeches.add(RecordSpeech.fromAgendaSpeech(speech));
+        userRepository.save(speaker);
+
+        if (speech.getEvaluatorId() == null) return;
+
+        User evaluator = userRepository.findById(speech.getSpeakerId()).orElseThrow();
+        var roles = (Map<String, Integer>) evaluator.getMeetingHistory().get("roles");
+        int times = roles.getOrDefault("evaluator", 0) + 1;
+        roles.put("evaluator", times);
+        userRepository.save(evaluator);
+    }
+
+    public void recordRole(AgendaRole role) {
+        if (role.getUserId() == null) return;
+        User user = userRepository.findById(role.getUserId()).orElseThrow();
+        var roles = (Map<String, Integer>) user.getMeetingHistory().get("roles");
+        int times = roles.getOrDefault(role.getRoleName(), 0) + 1;
+        roles.put(role.getRoleName(), times);
     }
 
 }

@@ -1,8 +1,6 @@
 package org.toastmasters.meetingplanner.dto.agenda;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
@@ -11,12 +9,23 @@ import java.time.LocalDateTime;
 public class Meeting {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     private LocalDateTime startDateTime;
     private String wordOfTheDay;
     private String theme;
 
     private Integer speakers;
+
+    private Boolean shouldReschedule;
+
+    public Boolean getShouldReschedule() {
+        return shouldReschedule;
+    }
+
+    public void setShouldReschedule(Boolean shouldReschedule) {
+        this.shouldReschedule = shouldReschedule;
+    }
 
     public Integer getSpeakers() {
         return speakers;

@@ -5,8 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.toastmasters.meetingplanner.dto.agenda.Meeting;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface MeetingRepository extends JpaRepository<Meeting, Long> {
     @Query(value = "SELECT * FROM Meeting ORDER BY start_date_time LIMIT 1 OFFSET :offset", nativeQuery = true)
@@ -21,4 +23,5 @@ public interface MeetingRepository extends JpaRepository<Meeting, Long> {
             "LEFT JOIN users u ON mr.user_id = u.id " +
             "where mr.meeting_id = :meetingId;", nativeQuery = true)
     List<Map<String, Object>> findAgendaRolesByMeetingId(@Param("meetingId") Long meetingId);
+
 }

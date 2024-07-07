@@ -1,6 +1,11 @@
 package org.toastmasters.meetingplanner.dto.user;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnTransformer;
+import org.toastmasters.meetingplanner.utility.HashMapConverter;
+
+import java.util.Map;
 
 
 @Entity
@@ -25,6 +30,10 @@ public class User {
 
     @Column(nullable = false)
     private String phoneNumber;
+    @Column(nullable = false)
+    @Convert(converter = HashMapConverter.class)
+    @ColumnTransformer(write = "?::json")
+    private Map<String, Object> meetingHistory;
 
     public User(){}
 
@@ -34,6 +43,10 @@ public class User {
         this.hashedPassword = hashedPassword;
         this.salt = salt;
         this.phoneNumber = phoneNumber;
+    }
+
+    public Map<String, Object> getMeetingHistory() {
+        return meetingHistory;
     }
 
     public Long getId() {
