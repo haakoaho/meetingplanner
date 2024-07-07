@@ -47,7 +47,20 @@ public class MeetingService {
         return new Agenda(roles, speeches, meeting.getStartDateTime(), meeting.getWordOfTheDay(), meeting.getTheme(), meeting.getSpeakers());
     }
 
-    public void reserveSpeech(SpeechRequest request) {
+    public Agenda getAgendaByMeetingId(Long id){
+        Meeting meeting = meetingRepository.findById(id).orElseThrow();
+        List<AgendaRole> roles = meetingRepository.findAgendaRolesByMeetingId(meeting.getId()).stream().map(AgendaRole::new).toList();
+        List<AgendaSpeech> speeches = speechRepository.findSpeechInAgendaByMeetingId(meeting.getId()).stream().map(AgendaSpeech::new).toList();
+        return new Agenda(roles, speeches, meeting.getStartDateTime(), meeting.getWordOfTheDay(), meeting.getTheme(), meeting.getSpeakers());
+    }
+
+    public Agenda getAgendaByMeeting(Meeting meeting){
+        List<AgendaRole> roles = meetingRepository.findAgendaRolesByMeetingId(meeting.getId()).stream().map(AgendaRole::new).toList();
+        List<AgendaSpeech> speeches = speechRepository.findSpeechInAgendaByMeetingId(meeting.getId()).stream().map(AgendaSpeech::new).toList();
+        return new Agenda(roles, speeches, meeting.getStartDateTime(), meeting.getWordOfTheDay(), meeting.getTheme(), meeting.getSpeakers());
+    }
+
+    public Meeting reserveSpeech(SpeechRequest request) {
         Meeting meeting = meetingRepository.findNthRecentMeeting(request.meetingOrder());
         User user = userService.getUserBySecurityConfig().orElseThrow();
         Speech speech = new Speech();
@@ -56,12 +69,14 @@ public class MeetingService {
         speech.setPathway(request.pathway());
         speech.setMeetingId(meeting.getId());
         speechRepository.save(speech);
+        return meeting;
     }
 
-    public void evaluateSpeech(Long speechId) {
+    public Long evaluateSpeech(Long speechId) {
         User user = userService.getUserBySecurityConfig().orElseThrow();
         Speech speech = speechRepository.findById(speechId).orElseThrow();
         speech.setEvaluatorId(user.getId());
         speechRepository.save(speech);
+        return speech.getMeetingId();
     }
 }

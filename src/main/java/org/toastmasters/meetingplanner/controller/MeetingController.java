@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.toastmasters.meetingplanner.dto.SpeechRequest;
 import org.toastmasters.meetingplanner.dto.agenda.Agenda;
+import org.toastmasters.meetingplanner.dto.agenda.Meeting;
 import org.toastmasters.meetingplanner.service.MeetingService;
 
 @RestController
@@ -24,14 +25,14 @@ public class MeetingController {
 
     @PostMapping("reserveSpeech")
     public Agenda reserveSpeech(@RequestBody SpeechRequest request){
-        meetingService.reserveSpeech(request);
-        return meetingService.getAgenda(request.meetingOrder());
+        Meeting meeting = meetingService.reserveSpeech(request);
+        return meetingService.getAgendaByMeeting(meeting);
     }
 
     @PatchMapping("evaluateSpeech/{id}")
     public Agenda evaluateSpeech(@PathVariable Long id){
-        meetingService.evaluateSpeech(id);
-        return meetingService.getAgenda(0);
+        Long meetingId = meetingService.evaluateSpeech(id);
+        return meetingService.getAgendaByMeetingId(meetingId);
     }
 
     @GetMapping("agenda/{meetingOrder}")
