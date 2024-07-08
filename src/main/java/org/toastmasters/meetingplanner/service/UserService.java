@@ -39,7 +39,7 @@ public class UserService {
         String hashedPassword = hashPassword(registerUser.password(), salt);
 
         User user = new User(registerUser.name(),
-                registerUser.email(), hashedPassword, salt, registerUser.phoneNumber());
+                registerUser.email(), hashedPassword, salt, registerUser.phoneNumber(), registerUser.photoConsent());
 
         userRepository.save(user);
     }

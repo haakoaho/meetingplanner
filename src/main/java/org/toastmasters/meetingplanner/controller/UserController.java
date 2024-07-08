@@ -2,6 +2,7 @@ package org.toastmasters.meetingplanner.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.toastmasters.meetingplanner.dto.user.RegisterUser;
 import org.toastmasters.meetingplanner.dto.user.User;
@@ -21,13 +22,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
+    @PostMapping("register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterUser user) {
         userService.registerUser(user);
         return ResponseEntity.ok("User registered successfully");
     }
 
-    @GetMapping("/userInfo")
+    @GetMapping("userInfo")
     public ResponseEntity<UserResponse> getUser() {
         Optional<User> user = userService.getUserBySecurityConfig();
         return user.map(UserResponse::fromUser).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());

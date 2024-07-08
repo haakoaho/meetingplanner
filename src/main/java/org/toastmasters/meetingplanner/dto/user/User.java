@@ -30,19 +30,27 @@ public class User {
 
     @Column(nullable = false)
     private String phoneNumber;
-    @Column(nullable = false)
+    @Column
     @Convert(converter = HashMapConverter.class)
     @ColumnTransformer(write = "?::json")
     private Map<String, Object> meetingHistory;
 
+    @Column(nullable = false)
+    private boolean photoConsent;
+
     public User(){}
 
-    public User(String name, String email, String hashedPassword, String salt, String phoneNumber) {
+    public User(String name, String email, String hashedPassword, String salt, String phoneNumber, boolean photoConsent) {
         this.name = name;
         this.email = email;
         this.hashedPassword = hashedPassword;
         this.salt = salt;
         this.phoneNumber = phoneNumber;
+        this.photoConsent = photoConsent;
+    }
+
+    public boolean isPhotoConsent() {
+        return photoConsent;
     }
 
     public Map<String, Object> getMeetingHistory() {
