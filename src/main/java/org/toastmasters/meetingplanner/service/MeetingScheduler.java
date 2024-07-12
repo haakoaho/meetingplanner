@@ -14,7 +14,7 @@ public class MeetingScheduler {
         this.meetingService = meetingService;
     }
 
-    @Scheduled(cron = "0 0 2 1/1 * *")
+    @Scheduled(cron = "0 1 1 * * ?")
     public void runJob() throws Exception {
         meetingService.archiveMeeting();
     }
