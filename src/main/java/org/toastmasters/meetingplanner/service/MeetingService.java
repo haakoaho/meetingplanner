@@ -2,7 +2,6 @@ package org.toastmasters.meetingplanner.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.toastmasters.meetingplanner.dto.Role;
 import org.toastmasters.meetingplanner.dto.Speech;
 import org.toastmasters.meetingplanner.dto.SpeechRequest;
 import org.toastmasters.meetingplanner.dto.agenda.*;

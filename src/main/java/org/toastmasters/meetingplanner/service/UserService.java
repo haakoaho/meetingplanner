@@ -14,9 +14,9 @@ import org.toastmasters.meetingplanner.dto.user.User;
 import org.toastmasters.meetingplanner.repository.UserRepository;
 
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.Optional;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class UserService {
@@ -72,14 +72,16 @@ public class UserService {
 
     public void recordSpeech(AgendaSpeech speech) {
         User speaker = userRepository.findById(speech.getSpeakerId()).orElseThrow();
-        var speeches = (List<RecordSpeech>) speaker.getMeetingHistory().get("speeches");
-        speeches.add(RecordSpeech.fromAgendaSpeech(speech));
+        var speeches = speaker.getSpeechHistory().stream().map(RecordSpeech.class::cast).toList();
+        var a = new ArrayList<>(speeches);
+        a.add(RecordSpeech.fromAgendaSpeech(speech));
+        speaker.setSpeechHistory(a.stream().map(Object.class::cast).toList());
         userRepository.save(speaker);
 
         if (speech.getEvaluatorId() == null) return;
 
         User evaluator = userRepository.findById(speech.getSpeakerId()).orElseThrow();
-        var roles = (Map<String, Integer>) evaluator.getMeetingHistory().get("roles");
+        var roles = evaluator.getRoleHistory();
         int times = roles.getOrDefault("evaluator", 0) + 1;
         roles.put("evaluator", times);
         userRepository.save(evaluator);
@@ -88,7 +90,7 @@ public class UserService {
     public void recordRole(AgendaRole role) {
         if (role.getUserId() == null) return;
         User user = userRepository.findById(role.getUserId()).orElseThrow();
-        var roles = (Map<String, Integer>) user.getMeetingHistory().get("roles");
+        var roles = user.getRoleHistory();
         int times = roles.getOrDefault(role.getRoleName(), 0) + 1;
         roles.put(role.getRoleName(), times);
     }

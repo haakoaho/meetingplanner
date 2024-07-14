@@ -4,7 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnTransformer;
 import org.toastmasters.meetingplanner.utility.HashMapConverter;
+import org.toastmasters.meetingplanner.utility.ListConverter;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -33,7 +37,12 @@ public class User {
     @Column
     @Convert(converter = HashMapConverter.class)
     @ColumnTransformer(write = "?::json")
-    private Map<String, Object> meetingHistory;
+    private Map<String, Integer> roleHistory;
+
+    @Column
+    @Convert(converter = ListConverter.class)
+    @ColumnTransformer(write = "?::json")
+    private List<Object> speechHistory;
 
     @Column(nullable = false)
     private boolean photoConsent;
@@ -47,14 +56,33 @@ public class User {
         this.salt = salt;
         this.phoneNumber = phoneNumber;
         this.photoConsent = photoConsent;
+        speechHistory = new ArrayList<>();
+        roleHistory = new HashMap<>();
     }
 
     public boolean isPhotoConsent() {
         return photoConsent;
     }
 
-    public Map<String, Object> getMeetingHistory() {
-        return meetingHistory;
+
+    public Map<String, Integer> getRoleHistory() {
+        return roleHistory;
+    }
+
+    public void setRoleHistory(Map<String, Integer> roleHistory) {
+        this.roleHistory = roleHistory;
+    }
+
+    public List<Object> getSpeechHistory() {
+        return speechHistory;
+    }
+
+    public void setSpeechHistory(List<Object> speechHistory) {
+        this.speechHistory = speechHistory;
+    }
+
+    public void setPhotoConsent(boolean photoConsent) {
+        this.photoConsent = photoConsent;
     }
 
     public Long getId() {
