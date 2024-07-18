@@ -19,9 +19,9 @@ public class MeetingScheduler {
         meetingService.archiveMeeting();
     }
 
-    @Scheduled(cron = "0 28 20 * * ?")
-    public void debugProd() {
-        meetingService.archiveMeeting();
+    @Scheduled(cron = "0 * * * * ?") // Runs every minute for testing
+    public void testJob() {
+        System.out.println("Scheduler is running - " + new java.util.Date());
     }
 
 }
