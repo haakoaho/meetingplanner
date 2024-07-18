@@ -18,10 +18,4 @@ public class MeetingScheduler {
     public void runJob() {
         meetingService.archiveMeeting();
     }
-
-    @Scheduled(cron = "0 49 18 * * ?") // Runs every minute for testing
-    public void testJob() {
-        meetingService.archiveMeeting();
-    }
-
 }
