@@ -15,7 +15,12 @@ public class MeetingScheduler {
     }
 
     @Scheduled(cron = "0 1 1 * * ?")
-    public void runJob() throws Exception {
+    public void runJob() {
+        meetingService.archiveMeeting();
+    }
+
+    @Scheduled(cron = "0 28 20 * * ?")
+    public void debugProd() {
         meetingService.archiveMeeting();
     }
 
