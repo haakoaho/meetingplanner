@@ -1,0 +1,20 @@
+name: Scheduled Job
+
+on:
+  schedule:
+    - cron: '1 1 * * *'
+  workflow_dispatch:
+
+jobs:
+  run-scheduled-task:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Make POST request to Batch API
+        env:
+          BATCH_USERNAME: ${{ secrets.BATCH_USERNAME }}
+          BATCH_PASSWORD: ${{ secrets.BATCH_PASSWORD }}
+        run: |
+          curl -X POST https://mobile-speak.asuscomm.com:8081/api/batch \
+            -H "Content-Type: application/json" \
+            -u "$BATCH_USERNAME:$BATCH_PASSWORD"
