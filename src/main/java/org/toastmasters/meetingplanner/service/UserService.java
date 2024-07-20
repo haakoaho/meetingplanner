@@ -14,9 +14,9 @@ import org.toastmasters.meetingplanner.dto.user.User;
 import org.toastmasters.meetingplanner.repository.UserRepository;
 
 import java.security.SecureRandom;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -95,4 +95,7 @@ public class UserService {
         roles.put(role.getRoleName(), times);
     }
 
+    public List<User> findAllUsers() {
+        return userRepository.findAll().stream().filter(user -> user.getRoles().contains("USER")).toList();
+    }
 }

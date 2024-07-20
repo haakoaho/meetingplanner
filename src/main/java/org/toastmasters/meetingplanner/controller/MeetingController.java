@@ -21,7 +21,7 @@ public class MeetingController {
     }
 
     @PatchMapping("reserveRole/{meetingOrder}/{id}")
-    public Agenda reserveRole(@PathVariable Long id, @PathVariable int meetingOrder, @RequestParam Long userId) {
+    public Agenda reserveRole(@PathVariable Long id, @PathVariable int meetingOrder, @RequestParam(required = false) Long userId) {
         meetingService.reserveRole(id, meetingOrder, false, userId);
         return meetingService.getAgenda(meetingOrder);
     }

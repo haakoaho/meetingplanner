@@ -10,6 +10,7 @@ import org.toastmasters.meetingplanner.dto.user.User;
 import org.toastmasters.meetingplanner.dto.user.UserResponse;
 import org.toastmasters.meetingplanner.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,7 +23,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-
+    @RolesAllowed("ROLE_ANONYMOUS")
     @PostMapping("register")
     public ResponseEntity<String> registerUser(@RequestBody RegisterUser user) {
         userService.registerUser(user);
@@ -34,5 +35,12 @@ public class UserController {
     public ResponseEntity<UserResponse> getUser() {
         Optional<User> user = userService.getUserBySecurityConfig();
         return user.map(UserResponse::fromUser).map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @RolesAllowed("USER")
+    @GetMapping("allUsers")
+    public List<UserResponse> getAllUsers() {
+        List<User> users = userService.findAllUsers();
+        return users.stream().map(UserResponse::fromUser).toList();
     }
 }
