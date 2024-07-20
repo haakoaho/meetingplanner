@@ -15,6 +15,6 @@ jobs:
           BATCH_USERNAME: ${{ secrets.BATCH_USERNAME }}
           BATCH_PASSWORD: ${{ secrets.BATCH_PASSWORD }}
         run: |
-          curl -X POST https://mobile-speak.asuscomm.com:8081/api/batch \
+          curl -X POST https://mobile-speak.asuscomm.com:8081/api/batch/archiveMeeting \
             -H "Content-Type: application/json" \
             -u "$BATCH_USERNAME:$BATCH_PASSWORD"

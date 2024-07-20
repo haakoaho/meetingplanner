@@ -1,5 +1,6 @@
 package org.toastmasters.meetingplanner.controller;
 
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +29,7 @@ public class UserController {
         return ResponseEntity.ok("User registered successfully");
     }
 
+    @RolesAllowed("USER")
     @GetMapping("userInfo")
     public ResponseEntity<UserResponse> getUser() {
         Optional<User> user = userService.getUserBySecurityConfig();

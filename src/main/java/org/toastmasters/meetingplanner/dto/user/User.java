@@ -6,10 +6,7 @@ import org.hibernate.annotations.ColumnTransformer;
 import org.toastmasters.meetingplanner.utility.HashMapConverter;
 import org.toastmasters.meetingplanner.utility.ListConverter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Entity
@@ -46,6 +43,10 @@ public class User {
 
     @Column(nullable = false)
     private boolean photoConsent;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Column(name = "role")
+    private Set<String> roles;
 
     public User(){}
 
@@ -58,6 +59,16 @@ public class User {
         this.photoConsent = photoConsent;
         speechHistory = new ArrayList<>();
         roleHistory = new HashMap<>();
+        roles = new HashSet<>();
+        roles.add("USER");
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 
     public boolean isPhotoConsent() {

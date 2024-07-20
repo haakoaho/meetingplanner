@@ -35,12 +35,23 @@ public class MeetingService {
         this.userService = userService;
     }
 
-    public void reserveRole(Long id, int meetingOrder) {
+    public void reserveRole(Long id, int meetingOrder, boolean force) {
         User user = userService.getUserBySecurityConfig().orElseThrow();
         Meeting meeting = meetingRepository.findNthRecentMeeting(meetingOrder);
 
         MeetingRole meetingRole = meetingRoleRepository.findByMeetingIdAndRoleId(meeting.getId(), id).orElseThrow();
+        if (!force && meetingRole.getUserId() != null) throw new IllegalArgumentException();
         meetingRole.setUserId(user.getId());
+        meetingRoleRepository.save(meetingRole);
+    }
+
+    public void cancelRole(Long id, int meetingOrder) {
+        User user = userService.getUserBySecurityConfig().orElseThrow();
+        Meeting meeting = meetingRepository.findNthRecentMeeting(meetingOrder);
+
+        MeetingRole meetingRole = meetingRoleRepository.findByMeetingIdAndRoleId(meeting.getId(), id).orElseThrow();
+        if (!user.getId().equals(meetingRole.getUserId())) throw new IllegalArgumentException();
+        meetingRole.setUserId(null);
         meetingRoleRepository.save(meetingRole);
     }
 
@@ -76,10 +87,20 @@ public class MeetingService {
         return meeting;
     }
 
-    public Long evaluateSpeech(Long speechId) {
+    public Long evaluateSpeech(Long speechId, boolean force) {
         User user = userService.getUserBySecurityConfig().orElseThrow();
         Speech speech = speechRepository.findById(speechId).orElseThrow();
+        if (!force && speech.getEvaluatorId() != null) throw new IllegalArgumentException();
         speech.setEvaluatorId(user.getId());
+        speechRepository.save(speech);
+        return speech.getMeetingId();
+    }
+
+    public Long cancelEvaluation(Long speechId) {
+        User user = userService.getUserBySecurityConfig().orElseThrow();
+        Speech speech = speechRepository.findById(speechId).orElseThrow();
+        if (!user.getId().equals(speech.getEvaluatorId())) throw new IllegalArgumentException();
+        speech.setEvaluatorId(null);
         speechRepository.save(speech);
         return speech.getMeetingId();
     }
@@ -91,11 +112,12 @@ public class MeetingService {
             agenda.speeches().forEach(userService::recordSpeech);
             agenda.roles().forEach(userService::recordRole);
             meetingRepository.delete(meeting);
-            scheduleNewMeeting();
         });
     }
 
-    private void scheduleNewMeeting() {
+    public void scheduleNewMeeting() {
+        List<Meeting> meetings = meetingRepository.findAll();
+        if (meetings.size() > 3) return; // no need to schedule if there are more than 3 meetings
         meetingRepository.findAll().stream()
                 .sorted(Comparator.comparing(Meeting::getStartDateTime).reversed())
                 .filter(Meeting::getShouldReschedule).findAny().ifPresent(meeting -> {

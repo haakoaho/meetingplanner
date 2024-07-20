@@ -1,6 +1,5 @@
 package org.toastmasters.meetingplanner.config;
 
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,9 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
-import org.toastmasters.meetingplanner.service.GitHubService;
 
 import java.util.List;
 
@@ -23,13 +20,11 @@ import java.util.List;
 public class SecurityConfig {
 
     private final CustomAuthenticationProvider customAuthenticationProvider;
-    private final GitHubService gitHubService;
 
 
     @Autowired
-    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider, GitHubService gitHubService) {
+    public SecurityConfig(CustomAuthenticationProvider customAuthenticationProvider) {
         this.customAuthenticationProvider = customAuthenticationProvider;
-        this.gitHubService = gitHubService;
     }
 
     @Bean

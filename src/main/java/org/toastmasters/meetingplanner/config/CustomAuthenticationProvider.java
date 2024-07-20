@@ -50,7 +50,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             return org.springframework.security.core.userdetails.User
                     .withUsername(user.getEmail())
                     .password(user.getHashedPassword())
-                    .roles("USER")
+                    .roles(user.getRoles().toArray(new String[0]))
                     .build();
         };
     }
