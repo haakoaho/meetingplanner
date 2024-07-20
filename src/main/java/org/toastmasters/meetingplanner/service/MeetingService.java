@@ -11,6 +11,8 @@ import org.toastmasters.meetingplanner.repository.*;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 @Service
 public class MeetingService {
@@ -35,13 +37,13 @@ public class MeetingService {
         this.userService = userService;
     }
 
-    public void reserveRole(Long id, int meetingOrder, boolean force) {
-        User user = userService.getUserBySecurityConfig().orElseThrow();
+    public void reserveRole(Long id, int meetingOrder, boolean force, Long otherUserId) {
+        long userId = Optional.ofNullable(otherUserId).orElse(userService.getUserBySecurityConfig().map(User::getId).orElseThrow());
         Meeting meeting = meetingRepository.findNthRecentMeeting(meetingOrder);
 
         MeetingRole meetingRole = meetingRoleRepository.findByMeetingIdAndRoleId(meeting.getId(), id).orElseThrow();
         if (!force && meetingRole.getUserId() != null) throw new IllegalArgumentException();
-        meetingRole.setUserId(user.getId());
+        meetingRole.setUserId(userId);
         meetingRoleRepository.save(meetingRole);
     }
 
@@ -138,5 +140,17 @@ public class MeetingService {
                 });
     }
 
+
+    public void setWordOfTheDay(String word) {
+        Meeting meeting = meetingRepository.findNthRecentMeeting(0);
+        meeting.setWordOfTheDay(word);
+        meetingRepository.save(meeting);
+    }
+
+    public void setTheme(String theme) {
+        Meeting meeting = meetingRepository.findNthRecentMeeting(0);
+        meeting.setTheme(theme);
+        meetingRepository.save(meeting);
+    }
 
 }

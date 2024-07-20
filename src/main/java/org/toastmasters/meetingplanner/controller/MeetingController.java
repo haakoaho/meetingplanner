@@ -21,14 +21,14 @@ public class MeetingController {
     }
 
     @PatchMapping("reserveRole/{meetingOrder}/{id}")
-    public Agenda reserveRole(@PathVariable Long id, @PathVariable int meetingOrder) {
-        meetingService.reserveRole(id, meetingOrder, false);
+    public Agenda reserveRole(@PathVariable Long id, @PathVariable int meetingOrder, @RequestParam Long userId) {
+        meetingService.reserveRole(id, meetingOrder, false, userId);
         return meetingService.getAgenda(meetingOrder);
     }
 
     @PatchMapping("reserveRole/{meetingOrder}/{id}/force")
-    public Agenda forceReserveRole(@PathVariable Long id, @PathVariable int meetingOrder) {
-        meetingService.reserveRole(id, meetingOrder, true);
+    public Agenda forceReserveRole(@PathVariable Long id, @PathVariable int meetingOrder, @RequestParam Long userId) {
+        meetingService.reserveRole(id, meetingOrder, true, userId);
         return meetingService.getAgenda(meetingOrder);
     }
 
@@ -66,5 +66,15 @@ public class MeetingController {
     @GetMapping("agenda/{meetingOrder}")
     public Agenda getAgenda(@PathVariable int meetingOrder) {
         return meetingService.getAgenda(meetingOrder);
+    }
+
+    @PatchMapping("wordOfTheDay")
+    public void setWordOfTheDay(@RequestParam String word) {
+        meetingService.setWordOfTheDay(word);
+    }
+
+    @PatchMapping("theme")
+    public void setTheme(@RequestParam String theme) {
+        meetingService.setTheme(theme);
     }
 }
