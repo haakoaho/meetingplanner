@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .cors(cors -> cors
                         .configurationSource(request -> {
                             CorsConfiguration config = new CorsConfiguration();
-                            config.setAllowedOrigins(List.of("http://localhost:3000", "192.168.50.232", "192.168.50.10", "https://mobile-speak.asuscomm.com/"));
+                            config.setAllowedOrigins(List.of("http://localhost:3000", "https://mobile-speak.asuscomm.com/"));
                             config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
                             config.setAllowedHeaders(List.of("*"));
                             config.setAllowCredentials(true);
