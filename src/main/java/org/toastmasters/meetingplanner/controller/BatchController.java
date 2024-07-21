@@ -8,7 +8,7 @@ import org.toastmasters.meetingplanner.service.MeetingService;
 
 @RestController
 @RequestMapping("api/batch")
-@RolesAllowed("ADMIN, GITHUB_ACTIONS")
+@RolesAllowed({"ADMIN","GITHUB_ACTIONS"})
 public class BatchController {
 
     private final MeetingService meetingService;
