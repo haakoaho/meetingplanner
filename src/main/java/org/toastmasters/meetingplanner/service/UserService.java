@@ -15,6 +15,7 @@ import org.toastmasters.meetingplanner.repository.UserRepository;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,7 +73,7 @@ public class UserService {
 
     public void recordSpeech(AgendaSpeech speech) {
         User speaker = userRepository.findById(speech.getSpeakerId()).orElseThrow();
-        var speeches = speaker.getSpeechHistory().stream().map(RecordSpeech.class::cast).toList();
+        var speeches = speaker.getSpeechHistory().stream().map(LinkedHashMap.class::cast).map(RecordSpeech::fromDatabaseJson).toList();
         var a = new ArrayList<>(speeches);
         a.add(RecordSpeech.fromAgendaSpeech(speech));
         speaker.setSpeechHistory(a.stream().map(Object.class::cast).toList());
