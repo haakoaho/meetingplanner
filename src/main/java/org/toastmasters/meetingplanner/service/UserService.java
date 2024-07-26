@@ -10,6 +10,7 @@ import org.toastmasters.meetingplanner.dto.RecordSpeech;
 import org.toastmasters.meetingplanner.dto.agenda.AgendaRole;
 import org.toastmasters.meetingplanner.dto.agenda.AgendaSpeech;
 import org.toastmasters.meetingplanner.dto.user.RegisterUser;
+import org.toastmasters.meetingplanner.dto.user.UpdateUser;
 import org.toastmasters.meetingplanner.dto.user.User;
 import org.toastmasters.meetingplanner.repository.UserRepository;
 
@@ -98,5 +99,25 @@ public class UserService {
 
     public List<User> findAllUsers() {
         return userRepository.findAll().stream().filter(user -> user.getRoles().contains("USER")).toList();
+    }
+
+    public void deleteUserBySecurityConfig() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        var user = getUserByEmail(principal.getUsername()).orElseThrow();
+        userRepository.delete(user);
+    }
+
+    public void updateUserBySecurityConfig(UpdateUser updateUser) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        var user = getUserByEmail(principal.getUsername()).orElseThrow();
+        user.setEmail(updateUser.email());
+        user.setName(updateUser.name());
+        user.setPhoneNumber(updateUser.phoneNumber());
+        user.setRoleHistory(updateUser.roleHistory());
+        user.setSpeechHistory(updateUser.speechHistory().stream().map(Object.class::cast).toList());
+        user.setPhotoConsent(updateUser.photoConsent());
+        userRepository.save(user);
     }
 }
