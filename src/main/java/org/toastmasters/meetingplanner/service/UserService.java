@@ -1,6 +1,7 @@
 package org.toastmasters.meetingplanner.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -10,6 +11,7 @@ import org.toastmasters.meetingplanner.dto.RecordSpeech;
 import org.toastmasters.meetingplanner.dto.agenda.AgendaRole;
 import org.toastmasters.meetingplanner.dto.agenda.AgendaSpeech;
 import org.toastmasters.meetingplanner.dto.user.RegisterUser;
+import org.toastmasters.meetingplanner.dto.user.UpdatePassword;
 import org.toastmasters.meetingplanner.dto.user.UpdateUser;
 import org.toastmasters.meetingplanner.dto.user.User;
 import org.toastmasters.meetingplanner.repository.UserRepository;
@@ -118,6 +120,20 @@ public class UserService {
         user.setRoleHistory(updateUser.roleHistory());
         user.setSpeechHistory(updateUser.speechHistory().stream().map(Object.class::cast).toList());
         user.setPhotoConsent(updateUser.photoConsent());
+        userRepository.save(user);
+    }
+
+    public void changePasswordBySecurityConfig(UpdatePassword updatePassword) throws AuthenticationException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        var principal = (org.springframework.security.core.userdetails.User) authentication.getPrincipal();
+        var user = getUserByEmail(principal.getUsername()).orElseThrow();
+        if (!validatePassword(updatePassword.oldPassword(), user)) {
+            throw new AuthenticationException("Wrong password on verification");
+        }
+        String newSalt = generateSalt();
+        String newHashedPassword = hashPassword(updatePassword.newPassword(), newSalt);
+        user.setSalt(newSalt);
+        user.setHashedPassword(newHashedPassword);
         userRepository.save(user);
     }
 }

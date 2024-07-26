@@ -1,13 +1,11 @@
 package org.toastmasters.meetingplanner.controller;
 
 import jakarta.annotation.security.RolesAllowed;
+import org.apache.tomcat.websocket.AuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.toastmasters.meetingplanner.dto.user.RegisterUser;
-import org.toastmasters.meetingplanner.dto.user.UpdateUser;
-import org.toastmasters.meetingplanner.dto.user.User;
-import org.toastmasters.meetingplanner.dto.user.UserResponse;
+import org.toastmasters.meetingplanner.dto.user.*;
 import org.toastmasters.meetingplanner.service.UserService;
 
 import java.util.List;
@@ -55,5 +53,11 @@ public class UserController {
     @PutMapping
     public void updateUser(@RequestBody UpdateUser updateUser) {
         userService.updateUserBySecurityConfig(updateUser);
+    }
+
+    @RolesAllowed("USER")
+    @PutMapping("changePassword")
+    public void updatePassword(@RequestBody UpdatePassword updatePassword) throws AuthenticationException {
+        userService.changePasswordBySecurityConfig(updatePassword);
     }
 }
