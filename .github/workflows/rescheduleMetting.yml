@@ -7,8 +7,8 @@ on:
 
 jobs:
   run-scheduled-task:
-    runs-on: ubuntu-latest
-
+    runs-on: debian:latest
+       
     steps:
       - name: Make POST request to Batch API
         env:
