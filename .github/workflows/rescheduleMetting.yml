@@ -7,14 +7,21 @@ on:
 
 jobs:
   run-scheduled-task:
-    runs-on: debian:latest
-       
+    runs-on: ubuntu-latest  # Can be changed to another OS if needed
+
     steps:
+      - name: Download Let's Encrypt Root CA
+        run: |
+          curl -o /tmp/isrgrootx1.pem https://letsencrypt.org/certs/isrgrootx1.pem
+          curl -o /tmp/isrg-root-x2.pem https://letsencrypt.org/certs/isrg-root-x2.pem
+
       - name: Make POST request to Batch API
         env:
           BATCH_USERNAME: ${{ secrets.BATCH_USERNAME }}
           BATCH_PASSWORD: ${{ secrets.BATCH_PASSWORD }}
         run: |
-          curl -X POST https://mobile-speak.asuscomm.com:8081/api/batch/archiveMeeting \
-            -H "Content-Type: application/json" \
-            -u "$BATCH_USERNAME:$BATCH_PASSWORD"
+          curl --cacert /tmp/isrgrootx1.pem \
+               --cacert /tmp/isrg-root-x2.pem \
+               -X POST https://mobile-speak.asuscomm.com:8081/api/batch/archiveMeeting \
+               -H "Content-Type: application/json" \
+               -u "$BATCH_USERNAME:$BATCH_PASSWORD"
